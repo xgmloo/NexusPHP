@@ -106,15 +106,16 @@ die();
 
 if ($_POST['action'] == "add")
 {
-	if ($_POST["linkname"] == "" || $_POST["url"] == "" || $_POST["title"] == "")
+	if ($_POST["linkname"] == "" || $_POST["url"] == "" || $_POST["title"] == "" || $_POST["num"] == "")
 	stderr($lang_linksmanage['std_error'], $lang_linksmanage['std_missing_form_data']);
 
 	$linkname = sqlesc($_POST["linkname"]);
 	$url = sqlesc($_POST["url"]);
 	$title = sqlesc($_POST["title"]);
+	$num = sqlesc($_POST["num"]);
 
 
-	sql_query("INSERT INTO links (name, url, title) VALUES($linkname, $url, $title)") or sqlerr(__FILE__, __LINE__);
+	sql_query("INSERT INTO links (name, url, title, num) VALUES($linkname, $url, $title, $num)") or sqlerr(__FILE__, __LINE__);
 	$res = sql_query("SELECT id FROM links WHERE name=$linkname");
 	$Cache->delete_value('links');
 	$arr = mysql_fetch_row($res);
@@ -132,17 +133,18 @@ stdhead($lang_linksmanage['std_links_manage']);
 <tr><td class=rowhead><?php echo $lang_linksmanage['text_site_name']?></td><td><input type=text name=linkname style="width: 200px"></td></tr>
 <tr><td class=rowhead><?php echo $lang_linksmanage['text_url']?></td><td><input type=text name=url style="width: 200px"></td></tr>
 <tr><td class=rowhead><?php echo $lang_linksmanage['text_title']?></td><td><input type=text name=title style="width: 200px"></td></tr>
+<tr><td class=rowhead><?php echo $lang_linksmanage['text_num']?></td><td><input type=text name=num style="width: 200px"></td></tr>
 <tr><td colspan=2 align=center><input type="hidden" name="action" value="add"><input type=submit value="<?php echo $lang_linksmanage['submit_okay']?>" class=btn></td></tr>
 </table>
 </form>
 <?php
 echo '<h1>'.$lang_linksmanage['text_manage_links'].'</h1>';
 echo '<table width="80%"  border="0" align="center" cellpadding="2" cellspacing="0">';
-echo "<tr><td class=colhead align=left>".$lang_linksmanage['text_site_name']."</td><td class=colhead>".$lang_linksmanage['text_url']."</td><td class=colhead>".$lang_linksmanage['text_title']."</td><td class=colhead align=center>".$lang_linksmanage['text_modify']."</td></tr>";
-$result = sql_query ("SELECT * FROM links ORDER BY id ASC");
+echo "<tr><td class=colhead align=left>".$lang_linksmanage['text_site_name']."</td><td class=colhead>".$lang_linksmanage['text_url']."</td><td class=colhead>".$lang_linksmanage['text_title']."</td><td class=colhead>".$lang_linksmanage['text_num']."</td><td class=colhead align=center>".$lang_linksmanage['text_modify']."</td></tr>";
+$result = sql_query ("SELECT * FROM links ORDER BY num ASC");
 if ($row = mysql_fetch_array($result)) {
 do {
-echo "<tr><td>".$row["name"]."</td><td>".$row["url"]."</td><td>".$row["title"]. "</td><td align=center nowrap><b><a href=\"".$PHP_SELF."?action=edit&id=".$row["id"]."\">".$lang_linksmanage['text_edit']."</a>&nbsp;|&nbsp;<a href=\"javascript:confirm_delete('".$row["id"]."', '".$lang_linksmanage['js_sure_to_delete_link']."', '');\"><font color=red>".$lang_linksmanage['text_delete']."</font></a></b></td></tr>";
+echo "<tr><td>".$row["name"]."</td><td>".$row["url"]."</td><td>".$row["title"]. "</td><td>".$row["num"]. "</td><td align=center nowrap><b><a href=\"".$PHP_SELF."?action=edit&id=".$row["id"]."\">".$lang_linksmanage['text_edit']."</a>&nbsp;|&nbsp;<a href=\"javascript:confirm_delete('".$row["id"]."', '".$lang_linksmanage['js_sure_to_delete_link']."', '');\"><font color=red>".$lang_linksmanage['text_delete']."</font></a></b></td></tr>";
 } while($row = mysql_fetch_array($result));
 } else {print "<tr><td colspan=4>".$lang_linksmanage['text_no_links_found']."</td></tr>";}
 echo "</table>";
@@ -158,6 +160,7 @@ if ($row = mysql_fetch_array($result)) {
 <tr><td class=rowhead><?php echo $lang_linksmanage['text_site_name']?></td><td><input type=text name=linkname size=40 value="<?php echo $row['name'];?>"></td></tr>
 <tr><td class=rowhead><?php echo $lang_linksmanage['text_url']?></td><td><input type=text name=url size=40 value="<?php echo $row["url"];?>"></td></tr>
 <tr><td class=rowhead><?php echo $lang_linksmanage['text_title']?></td><td><input type=text name=title size=40 value="<?php echo $row["title"];?>"></td></tr>
+<tr><td class=rowhead><?php echo $lang_linksmanage['text_num']?></td><td><input type=text name=num size=40 value="<?php echo $row["num"];?>"></td></tr>
 <tr><td colspan=2 align=center><input type="hidden" name=id value="<?php echo $row["id"];?>"><input type="hidden" name="action" value="editlink"><input type=submit value="<?php echo $lang_linksmanage['submit_okay']?>" class=btn></td></tr>
 </table>
 </form>

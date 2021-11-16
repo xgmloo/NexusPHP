@@ -596,7 +596,7 @@ if ($showtrackerload == "yes") {
 	$Cache->new_page('links', 86400, false);
 	if (!$Cache->get_page()){
 	$Cache->add_whole_row();
-	$res = sql_query("SELECT * FROM links ORDER BY id ASC") or sqlerr(__FILE__, __LINE__);
+	$res = sql_query("SELECT * FROM links ORDER BY num ASC") or sqlerr(__FILE__, __LINE__);
 	if (mysql_num_rows($res) > 0)
 	{
 		$links = "";
